@@ -1,12 +1,14 @@
 package com.c3.logitrack.service;
 
-import com.c3.logitrack.entities.Producto;
-import com.c3.logitrack.exception.ResourceNotFoundException;
-import com.c3.logitrack.repository.ProductoRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.c3.logitrack.entities.Producto;
+import com.c3.logitrack.exception.BadRequestException;
+import com.c3.logitrack.exception.ResourceNotFoundException;
+import com.c3.logitrack.repository.ProductoRepository;
 
 @Service
 public class ProductoService {
@@ -19,6 +21,9 @@ public class ProductoService {
     }
 
     public Producto obtenerProductoPorId(Long id) {
+        if (id == null) {
+            throw new BadRequestException("El id del producto es obligatorio");
+        }
         return productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
     }
@@ -44,6 +49,9 @@ public class ProductoService {
     }
 
     public void eliminarProducto(Long id) {
+        if (id == null) {
+            throw new BadRequestException("El id del producto es obligatorio");
+        }
         Producto producto = obtenerProductoPorId(id);
         productoRepository.delete(producto);
     }

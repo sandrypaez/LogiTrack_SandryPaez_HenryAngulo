@@ -39,14 +39,12 @@ public class AuthService {
 
     // ===== Login =====
     public Usuario authenticateUser(String username, String password) {
-        // Aceptar cualquier usuario y contraseña:
-        // - Si el usuario existe en la base de datos, lo devolvemos sin validar la contraseña
-        // - Si no existe, creamos un usuario temporal (no persistido) con rol EMPLEADO
+        // Aceptar cualquier usuario y contraseña sin validar contra la BD
+        // Si el usuario existe, devolverlo; si no, crear uno temporal
         return usuarioRepository.findByUsername(username).orElseGet(() -> {
             Usuario temporal = new Usuario();
             temporal.setUsername(username);
             temporal.setEmail(username != null ? username + "@example.com" : "");
-            // Guardamos una contraseña codificada por coherencia, aunque no se usará para validar
             temporal.setPassword(password != null ? passwordEncoder.encode(password) : passwordEncoder.encode(""));
             temporal.setRol(RolUsuario.EMPLEADO);
             return temporal;

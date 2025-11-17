@@ -1,11 +1,14 @@
 package com.c3.logitrack.service;
 
-import com.c3.logitrack.entities.Bodega;
-import com.c3.logitrack.repository.BodegaRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.c3.logitrack.entities.Bodega;
+import com.c3.logitrack.exception.BadRequestException;
+import com.c3.logitrack.repository.BodegaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -23,9 +26,10 @@ public class BodegaService {
         return bodegaRepository.findAll();
     }
 
-    // Buscar bodega por ID
-    @SuppressWarnings("null")
     public Bodega obtenerBodegaPorId(Long id) {
+        if (id == null) {
+            throw new BadRequestException("El id de la bodega es obligatorio");
+        }
         return bodegaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Bodega con ID " + id + " no encontrada"));
     }
@@ -66,10 +70,12 @@ public class BodegaService {
         return bodegaRepository.save(bodegaExistente);
     }
 
-    // Eliminar bodega
-    @SuppressWarnings("null")
     public void eliminarBodega(Long id) {
+        if (id == null) {
+            throw new BadRequestException("El id de la bodega es obligatorio");
+        }
         Bodega bodegaExistente = obtenerBodegaPorId(id);
+        Objects.requireNonNull(bodegaExistente, "Bodega no encontrada");
         bodegaRepository.delete(bodegaExistente);
     }
 }

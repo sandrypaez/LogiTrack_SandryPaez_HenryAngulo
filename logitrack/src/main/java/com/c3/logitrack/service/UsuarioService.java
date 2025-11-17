@@ -1,12 +1,15 @@
 package com.c3.logitrack.service;
 
-import com.c3.logitrack.entities.Usuario;
-import com.c3.logitrack.exception.ResourceNotFoundException;
-import com.c3.logitrack.repository.UsuarioRepository;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.c3.logitrack.entities.Usuario;
+import com.c3.logitrack.exception.BadRequestException;
+import com.c3.logitrack.exception.ResourceNotFoundException;
+import com.c3.logitrack.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
@@ -18,14 +21,16 @@ public class UsuarioService {
         return usuarioRepository.findByUsername(username);
     }
 
-    @SuppressWarnings("null")
     public Usuario getUsuarioById(Long id) {
+        if (id == null) {
+            throw new BadRequestException("El id del usuario es obligatorio");
+        }
         return usuarioRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
     }
 
-    @SuppressWarnings("null")
     public Usuario createUsuario(Usuario usuario) {
+        Objects.requireNonNull(usuario, "Usuario es requerido");
         return usuarioRepository.save(usuario);
     }
 
