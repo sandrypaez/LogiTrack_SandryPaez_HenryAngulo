@@ -1,0 +1,404 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-11-14T18:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/auth/login",
+      "name": "Login",
+      "description": "Obtener token JWT",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"admin\",\n  \"password\": \"1234\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_content_type"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202800000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_register",
+      "parentId": "fld_auth",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/auth/register",
+      "name": "Registrar Usuario",
+      "description": "Registrar nuevo usuario",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"nuevo_usuario\",\n  \"email\": \"nuevo@email.com\",\n  \"password\": \"password123\",\n  \"rol\": \"EMPLEADO\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_content_type"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202799000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_listar_bodegas",
+      "parentId": "fld_bodegas",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/bodegas",
+      "name": "Listar Bodegas",
+      "description": "Obtener todas las bodegas",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202798000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_crear_bodega",
+      "parentId": "fld_bodegas",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/bodegas",
+      "name": "Crear Bodega",
+      "description": "Crear nueva bodega (Solo ADMIN)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nombre\": \"Bodega Nueva\",\n  \"ubicacion\": \"Ciudad Nueva\",\n  \"capacidad\": 2000,\n  \"encargado\": \"María López\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_content_type"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202797000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_listar_productos",
+      "parentId": "fld_productos",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/productos",
+      "name": "Listar Productos",
+      "description": "Obtener todos los productos",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202796000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_stock_bajo",
+      "parentId": "fld_productos",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/productos/stock-bajo",
+      "name": "Productos Stock Bajo",
+      "description": "Productos con stock < 10 unidades",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202795000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_listar_movimientos",
+      "parentId": "fld_movimientos",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/movimientos",
+      "name": "Listar Movimientos",
+      "description": "Obtener todos los movimientos",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202794000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_listar_auditorias",
+      "parentId": "fld_auditorias",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/auditorias",
+      "name": "Listar Auditorías",
+      "description": "Obtener todas las auditorías",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202793000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_resumen",
+      "parentId": "fld_reportes",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "url": "{{ base_url }}/reportes/resumen",
+      "name": "Resumen General",
+      "description": "Obtener resumen del sistema",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1734202792000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Autenticación",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202800000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_bodegas",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Bodegas",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202799000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_productos",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Productos",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202798000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_movimientos",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Movimientos",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202797000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_auditorias",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Auditorías",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202796000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_reportes",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "Reportes",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1734202795000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_logitrack",
+      "parentId": null,
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "LogiTrack API",
+      "description": "API REST para gestión de bodegas",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_logitrack",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "LogiTrack Local",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "token": "",
+        "username": "admin",
+        "password": "1234"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token",
+          "username",
+          "password"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1734202800000,
+      "_type": "environment"
+    },
+    {
+      "_id": "srv_logitrack",
+      "parentId": "wrk_logitrack",
+      "modified": 1734202800000,
+      "created": 1734202800000,
+      "name": "LogiTrack Server",
+      "description": "Servidor local de LogiTrack",
+      "url": "http://localhost:8080",
+      "environment": "env_logitrack",
+      "environmentPropertyOrder": null,
+      "metaSortKey": 1734202800000,
+      "_type": "api_spec"
+    }
+  ]
+}
+
