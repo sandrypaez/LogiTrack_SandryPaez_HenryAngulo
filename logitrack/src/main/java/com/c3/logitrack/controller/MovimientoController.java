@@ -1,7 +1,25 @@
 package com.c3.logitrack.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.c3.logitrack.entities.Movimiento;
 import com.c3.logitrack.service.MovimientoService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,15 +27,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/movimientos")
@@ -30,7 +39,7 @@ public class MovimientoController {
 
     @GetMapping
     @Operation(summary = "Listar todos los movimientos", description = "Obtiene una lista de todos los movimientos")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')") // Permitir acceso público
     public ResponseEntity<List<Movimiento>> listarMovimientos() {
         List<Movimiento> movimientos = movimientoService.listarMovimientos();
         return ResponseEntity.ok(movimientos);
@@ -38,7 +47,7 @@ public class MovimientoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener movimiento por ID", description = "Obtiene un movimiento específico por su ID")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')") // Permitir acceso público
     public ResponseEntity<Movimiento> obtenerMovimiento(@PathVariable Long id) {
         Movimiento movimiento = movimientoService.obtenerMovimientoPorId(id);
         return ResponseEntity.ok(movimiento);
@@ -46,7 +55,7 @@ public class MovimientoController {
 
     @GetMapping("/fechas")
     @Operation(summary = "Movimientos por rango de fechas", description = "Obtiene movimientos entre dos fechas")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')") // Permitir acceso público
     public ResponseEntity<List<Movimiento>> obtenerMovimientosPorFechas(
             @Parameter(description = "Fecha de inicio (formato: yyyy-MM-ddTHH:mm:ss)") 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,

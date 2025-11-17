@@ -66,9 +66,14 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         // Swagger/OpenAPI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
-                        // Permitir GET públicas a rutas de bodegas (para acceso desde navegador sin token)
+                        // Permitir GET públicas a rutas de API (para acceso desde navegador sin token)
                         .requestMatchers(HttpMethod.GET, "/bodegas/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/bodegas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/productos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/movimientos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auditorias/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reportes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         // Todas las demás rutas requieren autenticación
                         .anyRequest().authenticated()
