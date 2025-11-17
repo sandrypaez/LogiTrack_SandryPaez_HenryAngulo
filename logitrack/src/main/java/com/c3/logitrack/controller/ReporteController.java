@@ -10,6 +10,7 @@ import com.c3.logitrack.model.ReporteResumenDTO;
 import com.c3.logitrack.service.ReporteService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/reportes")
-@Tag(name = "Reportes", description = "Endpoints para generar reportes del sistema")
+@Tag(name = "Reportes", description = "Generación de reportes y análisis del sistema")
 @SecurityRequirement(name = "bearerAuth")
 public class ReporteController {
 
@@ -25,14 +26,17 @@ public class ReporteController {
     private ReporteService reporteService;
 
     @GetMapping("/resumen")
-    @Operation(summary = "Resumen general", description = "Obtiene un resumen general con stock total por bodega y productos más movidos")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')") // Permitir acceso público
+    @Operation(
+        summary = "Resumen general del sistema",
+        description = "Genera un resumen con información general incluyendo stock total por bodega y productos más movidos"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Reporte generado exitosamente")
+            @ApiResponse(responseCode = "200", description = "Reporte generado exitosamente",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Error al generar el reporte")
     })
     public ResponseEntity<ReporteResumenDTO> obtenerResumen() {
         ReporteResumenDTO resumen = reporteService.obtenerResumen();
         return ResponseEntity.ok(resumen);
     }
 }
-

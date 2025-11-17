@@ -1,24 +1,33 @@
 package com.c3.logitrack.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.c3.logitrack.entities.Usuario;
 import com.c3.logitrack.entities.enums.RolUsuario;
 import com.c3.logitrack.security.JwtTokenProvider;
 import com.c3.logitrack.service.AuthService;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
-@Tag(name = "Autenticación", description = "Endpoints para registro y autenticación de usuarios")
+@Tag(name = "Autenticación", description = "Endpoints para autenticación y registro de usuarios")
 public class AuthController {
 
     @Autowired
@@ -27,14 +36,30 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    // ===== LOGIN =====
     @PostMapping("/login")
-    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y retorna un token JWT")
+    @Operation(
+        summary = "Iniciar sesión",
+        description = "Autentica un usuario con sus credenciales y retorna un token JWT para acceder a endpoints protegidos"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login exitoso"),
-            @ApiResponse(responseCode = "400", description = "Credenciales inválidas")
+            @ApiResponse(responseCode = "200", description = "Login exitoso - Token JWT generado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\n" +
+                                    "  \"message\": \"Inicio de sesión exitoso\",\n" +
+                                    "  \"token\": \"eyJhbGciOiJIUzUxMiJ9...\",\n" +
+                                    "  \"type\": \"Bearer\",\n" +
+                                    "  \"usuario\": \"admin\",\n" +
+                                    "  \"email\": \"admin@logitrack.com\",\n" +
+                                    "  \"rol\": \"ADMIN\"\n" +
+                                    "}"))),
+            @ApiResponse(responseCode = "400", description = "Credenciales inválidas o parámetros faltantes",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\n" +
+                                    "  \"message\": \"Usuario o contraseña incorrectos\"\n" +
+                                    "}")))
     })
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    public ResponseEntity<?> login(
+            @RequestBody @Parameter(description = "Credenciales del usuario") Map<String, String> loginRequest) {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
@@ -65,14 +90,29 @@ public class AuthController {
         }
     }
 
-    // ===== REGISTRO =====
     @PostMapping("/register")
-    @Operation(summary = "Registrar usuario", description = "Registra un nuevo usuario en el sistema")
+    @Operation(
+        summary = "Registrar nuevo usuario",
+        description = "Registra un nuevo usuario en el sistema con los datos proporcionados"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Error en los datos proporcionados")
+            @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\n" +
+                                    "  \"message\": \"Usuario registrado correctamente\",\n" +
+                                    "  \"id\": 1,\n" +
+                                    "  \"username\": \"empleado1\",\n" +
+                                    "  \"email\": \"empleado@logitrack.com\",\n" +
+                                    "  \"rol\": \"EMPLEADO\"\n" +
+                                    "}"))),
+            @ApiResponse(responseCode = "400", description = "Error en los datos proporcionados",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(example = "{\n" +
+                                    "  \"message\": \"El usuario ya existe\"\n" +
+                                    "}")))
     })
-    public ResponseEntity<?> register(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> register(
+            @RequestBody @Parameter(description = "Datos para registrar usuario") Map<String, String> request) {
         String username = request.get("username");
         String email = request.get("email");
         String password = request.get("password");

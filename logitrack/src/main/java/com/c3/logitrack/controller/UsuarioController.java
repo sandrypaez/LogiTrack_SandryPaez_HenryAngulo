@@ -13,6 +13,8 @@ import com.c3.logitrack.entities.Usuario;
 import com.c3.logitrack.repository.UsuarioRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin(origins = "*")
-@Tag(name = "Usuarios", description = "Endpoints para gestión de usuarios")
+@Tag(name = "Usuarios", description = "Gestión y consulta de información de usuarios del sistema")
 @SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {
 
@@ -32,22 +34,30 @@ public class UsuarioController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar todos los usuarios", description = "Obtiene una lista de todos los usuarios")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente")
-    })
+    @Operation(
+        summary = "Listar todos los usuarios",
+        description = "Obtiene una lista completa de todos los usuarios registrados en el sistema"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente",
+            content = @Content(mediaType = "application/json"))
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return ResponseEntity.ok(usuarios);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener usuario por ID", description = "Obtiene un usuario específico por su ID")
+    @Operation(
+        summary = "Obtener usuario por ID",
+        description = "Obtiene los detalles de un usuario específico usando su ID"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente",
+                    content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Long id) {
+    public ResponseEntity<Usuario> obtenerUsuario(
+            @Parameter(description = "ID del usuario", required = true)
+            @PathVariable Long id) {
         if (id == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -57,12 +67,18 @@ public class UsuarioController {
     }
 
     @GetMapping("/username/{username}")
-    @Operation(summary = "Obtener usuario por username", description = "Obtiene un usuario específico por su nombre de usuario")
+    @Operation(
+        summary = "Obtener usuario por username",
+        description = "Obtiene un usuario específico buscando por su nombre de usuario (username)"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente",
+                    content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<Usuario> obtenerPorUsername(@PathVariable String username) {
+    public ResponseEntity<Usuario> obtenerPorUsername(
+            @Parameter(description = "Nombre de usuario (username)", required = true)
+            @PathVariable String username) {
         return usuarioRepository.findByUsername(username)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
