@@ -1,8 +1,12 @@
 package com.c3.logitrack.security;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -18,9 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -65,6 +66,9 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         // Swagger/OpenAPI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
+                        // Permitir GET públicas a rutas de bodegas (para acceso desde navegador sin token)
+                        .requestMatchers(HttpMethod.GET, "/bodegas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/bodegas/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         // Todas las demás rutas requieren autenticación
                         .anyRequest().authenticated()
