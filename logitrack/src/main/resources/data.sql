@@ -1,37 +1,86 @@
 
-
-
 INSERT INTO bodegas (nombre, ubicacion, capacidad, encargado) 
 VALUES
     ('Bodega Central', 'Ciudad Principal', 5000, 'Juan Pérez'),
     ('Bodega Norte', 'Ciudad Norte', 3000, 'Ana González'),
-    ('Bodega Sur', 'Ciudad Sur', 4000, 'Carlos Martínez');
-
+    ('Bodega Sur', 'Ciudad Sur', 4000, 'Carlos Martínez'),
+    ('Bodega Este', 'Ciudad Este', 3500, 'María López'),
+    ('Bodega Oeste', 'Ciudad Oeste', 4500, 'Pedro Ramírez'),
+    ('Bodega Centro', 'Ciudad Centro', 5500, 'Laura Torres'),
+    ('Bodega Industrial', 'Zona Industrial', 6000, 'Roberto Díaz'),
+    ('Bodega Portuaria', 'Puerto Principal', 4000, 'Sofia Herrera'),
+    ('Bodega Rural', 'Campo Verde', 2500, 'Miguel Castro'),
+    ('Bodega Urbana', 'Centro Urbano', 3200, 'Elena Vargas'),
+    ('Bodega Logística', 'Parque Logístico', 7000, 'Andrés Morales'),
+    ('Bodega Frigorífica', 'Zona Fría', 3800, 'Carmen Ruiz'),
+    ('Bodega Aérea', 'Aeropuerto', 4200, 'Fernando Gómez'),
+    ('Bodega Marítima', 'Costa Azul', 4800, 'Isabel Peña'),
+    ('Bodega Suburbana', 'Suburbio Norte', 3600, 'Diego Silva');
 
 INSERT INTO productos (nombre, categoria, stock, precio)
 VALUES
     ('Producto A', 'Categoría 1', 100, 10.00),
     ('Producto B', 'Categoría 2', 200, 15.50),
     ('Producto C', 'Categoría 1', 50, 8.00),
-    ('Producto D', 'Categoría 3', 30, 20.00);
+    ('Producto D', 'Categoría 3', 30, 20.00),
+    ('Producto E', 'Categoría 1', 120, 12.00),
+    ('Producto F', 'Categoría 2', 180, 18.00),
+    ('Producto G', 'Categoría 3', 40, 25.00),
+    ('Producto H', 'Categoría 1', 90, 9.50),
+    ('Producto I', 'Categoría 2', 150, 14.00),
+    ('Producto J', 'Categoría 3', 60, 22.00),
+    ('Producto K', 'Categoría 1', 110, 11.00),
+    ('Producto L', 'Categoría 2', 170, 16.50),
+    ('Producto M', 'Categoría 3', 35, 19.00),
+    ('Producto N', 'Categoría 1', 80, 7.50),
+    ('Producto O', 'Categoría 2', 140, 13.00);
 
--- Nota: Las contraseñas deben estar encriptadas con BCrypt en producción
--- Estas son contraseñas de ejemplo (1234 y abcd) que se encriptarán al ejecutar
 INSERT INTO usuarios (username, password, email, rol) 
 VALUES
-    ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin@logitrack.com', 'ADMIN'),
-    ('empleado1', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HFj9jO7dP.5L8K8Y5Y5Y5', 'empleado1@logitrack.com', 'EMPLEADO');
+    ('empleado2', 'efgh', 'empleado2@logitrack.com', 'EMPLEADO'),
+    ('empleado3', 'ijkl', 'empleado3@logitrack.com', 'EMPLEADO'),
+    ('admin2', '5678', 'admin2@logitrack.com', 'ADMIN'),
+    ('empleado4', 'mnop', 'empleado4@logitrack.com', 'EMPLEADO'),
+    ('empleado5', 'qrst', 'empleado5@logitrack.com', 'EMPLEADO'),
+    ('admin3', '9012', 'admin3@logitrack.com', 'ADMIN'),
+    ('empleado6', 'uvwx', 'empleado6@logitrack.com', 'EMPLEADO'),
+    ('empleado7', 'yzab', 'empleado7@logitrack.com', 'EMPLEADO'),
+    ('admin4', '3456', 'admin4@logitrack.com', 'ADMIN'),
+    ('empleado8', 'cdef', 'empleado8@logitrack.com', 'EMPLEADO'),
+    ('empleado9', 'ghij', 'empleado9@logitrack.com', 'EMPLEADO'),
+    ('admin5', '7890', 'admin5@logitrack.com', 'ADMIN'),
+    ('empleado10', 'klmn', 'empleado10@logitrack.com', 'EMPLEADO');
 
-
-INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, bodega_origen_id, bodega_destino_id, producto_id, cantidad)
+INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, usuario_responsable_id, bodega_origen_id, bodega_destino_id, producto_id, cantidad)
 VALUES
-    ('2025-11-01 10:00:00', 'ENTRADA', 1, NULL, 1, 1, 100),
-    ('2025-11-02 11:00:00', 'SALIDA', 2, 1, NULL, 1, 50),
-    ('2025-11-03 12:00:00', 'TRANSFERENCIA', 1, 1, 2, 2, 20);
+    ('2025-11-04 13:00:00', 'ENTRADA', 18, 18, NULL, 3, 3, 75),
+    ('2025-11-05 14:00:00', 'SALIDA', 19, 19, 2, NULL, 2, 30),
+    ('2025-11-06 15:00:00', 'TRANSFERENCIA', 20, 20, 3, 1, 4, 25),
+    ('2025-11-07 16:00:00', 'ENTRADA', 21, 21, NULL, 4, 5, 90),
+    ('2025-11-08 17:00:00', 'SALIDA', 22, 22, 4, NULL, 3, 40),
+    ('2025-11-09 18:00:00', 'TRANSFERENCIA', 23, 23, 1, 5, 6, 35),
+    ('2025-11-10 19:00:00', 'ENTRADA', 24, 24, NULL, 2, 7, 110),
+    ('2025-11-11 20:00:00', 'SALIDA', 25, 25, 5, NULL, 4, 55),
+    ('2025-11-12 21:00:00', 'TRANSFERENCIA', 26, 26, 2, 3, 8, 45),
+    ('2025-11-13 22:00:00', 'ENTRADA', 27, 27, NULL, 1, 9, 80),
+    ('2025-11-14 23:00:00', 'SALIDA', 28, 28, 3, NULL, 5, 60),
+    ('2025-11-15 00:00:00', 'TRANSFERENCIA', 29, 29, 4, 2, 10, 50);
 
 
 INSERT INTO auditorias (tipo_operacion, fecha_hora, usuario, entidad_afectada, entidad_id, valores_anteriores, valores_nuevos)
 VALUES
-    ('INSERT', '2025-11-01 10:00:00', 'admin', 'Bodega', 1, NULL, '{"nombre": "Bodega Central", "ubicacion": "Ciudad Principal"}'),
-    ('UPDATE', '2025-11-02 11:00:00', 'empleado1', 'Producto', 1, '{"stock": 100}', '{"stock": 50}'),
-    ('DELETE', '2025-11-03 12:00:00', 'admin', 'Movimiento', 3, '{"cantidad": 20}', NULL);
+    ('INSERT', '2025-11-04 13:00:00', 'admin2', 'Producto', 5, NULL, '{"nombre": "Producto E", "categoria": "Categoría 1"}'),
+    ('UPDATE', '2025-11-05 14:00:00', 'empleado2', 'Bodega', 2, '{"capacidad": 3000}', '{"capacidad": 3200}'),
+    ('DELETE', '2025-11-06 15:00:00', 'admin', 'Usuario', 3, '{"username": "empleado2"}', NULL),
+    ('INSERT', '2025-11-07 16:00:00', 'empleado3', 'Movimiento', 4, NULL, '{"tipo_movimiento": "ENTRADA", "cantidad": 75}'),
+    ('UPDATE', '2025-11-08 17:00:00', 'admin3', 'Producto', 3, '{"precio": 8.00}', '{"precio": 9.00}'),
+    ('DELETE', '2025-11-09 18:00:00', 'empleado4', 'Auditoria', 4, '{"tipo_operacion": "INSERT"}', NULL),
+    ('INSERT', '2025-11-10 19:00:00', 'admin4', 'Bodega', 6, NULL, '{"nombre": "Bodega Centro", "ubicacion": "Ciudad Centro"}'),
+    ('UPDATE', '2025-11-11 20:00:00', 'empleado5', 'Usuario', 5, '{"rol": "ADMIN"}', '{"rol": "EMPLEADO"}'),
+    ('DELETE', '2025-11-12 21:00:00', 'admin5', 'Producto', 7, '{"stock": 40}', NULL),
+    ('INSERT', '2025-11-13 22:00:00', 'empleado6', 'Movimiento', 7, NULL, '{"tipo_movimiento": "SALIDA", "cantidad": 40}'),
+    ('UPDATE', '2025-11-14 23:00:00', 'admin2', 'Bodega', 4, '{"encargado": "María López"}', '{"encargado": "Ana López"}'),
+    ('DELETE', '2025-11-15 00:00:00', 'empleado7', 'Auditoria', 7, '{"fecha_hora": "2025-11-07 16:00:00"}', NULL);
+
+
+
