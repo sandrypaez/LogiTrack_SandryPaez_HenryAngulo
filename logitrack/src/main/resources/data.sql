@@ -50,6 +50,7 @@ VALUES
     ('empleado9', 'ghij', 'empleado9@logitrack.com', 'EMPLEADO'),
     ('admin5', '7890', 'admin5@logitrack.com', 'ADMIN'),
     ('empleado10', 'klmn', 'empleado10@logitrack.com', 'EMPLEADO');
+    
 INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, bodega_origen_id, bodega_destino_id, producto_id, cantidad)
 VALUES
     ('2025-11-04 13:00:00', 'ENTRADA', 1, NULL, 3, 3, 75),

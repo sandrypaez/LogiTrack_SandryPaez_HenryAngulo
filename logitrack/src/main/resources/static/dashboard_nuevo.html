@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiTrack Dashboard - Sistema de Gestión de Inventarios</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.2/index.min.js"></script>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --primary-light: #DBEAFE;
+            --secondary: #8B5CF6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #06B6D4;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--gray-50) 0%, #E0E7FF 100%);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
+        }
+        
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+            color: var(--gray-900);
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-menu {
+            padding: 24px 0;
+        }
+        
+        .nav-item {
+            margin: 0 16px 8px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+        
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+        
+        .topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0;
+        }
+        
+        .breadcrumb {
+            color: var(--gray-500);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 300px;
+            padding: 12px 16px 12px 48px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 14px;
+            background: var(--gray-50);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 16px;
+        }
+        
+        .notification-btn {
+            position: relative;
+            padding: 12px;
+            background: var(--gray-50);
+            border: none;
+            border-radius: 12px;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+        
+        .notification-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: var(--danger);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .user-menu:hover {
+            background: var(--gray-50);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 14px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Content Area */
+        .content {
+            padding: 32px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--gray-100);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--white);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+        
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .stat-change.neutral {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+        
+        /* Charts */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .chart-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--gray-100);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chart-filters {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        /* Tables */
+        .table-card {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--gray-100);
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+        
+        .table-header {
+            padding: 32px;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--gray-50);
+        }
+        
+        .table-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .table-search {
+            position: relative;
+        }
+        
+        .table-search input {
+            padding: 12px 16px 12px 48px;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 14px;
+            width: 280px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+        
+        .table-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        
+        .table-search .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            transform: translateY(-1px);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th {
+            background: var(--gray-50);
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .table td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-900);
+            font-size: 14px;
+        }
+        
+        .table tr:hover {
+            background: var(--gray-50);
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .status-info {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--info);
+        }
+        
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 32px;
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            color: var(--gray-300);
+            margin-bottom: 24px;
+        }
+        
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+        
+        .empty-description {
+            color: var(--gray-500);
+            font-size: 16px;
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-weight: 500;
+            border: 1px solid;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        
+        .alert-info {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--info);
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .topbar {
+                padding: 16px 20px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 24px;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <span class="logo-text">LogiTrack</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="#" class="nav-link active" onclick="loadDashboard()">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadUsuarios()">
+                        <i class="nav-icon fas fa-users"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadBodegas()">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <span>Bodegas</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadProductos()">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <span>Productos</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadMovimientos()">
+                        <i class="nav-icon fas fa-exchange-alt"></i>
+                        <span>Movimientos</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="showCreateMovimiento()">
+                        <i class="nav-icon fas fa-plus-circle"></i>
+                        <span>Nuevo Movimiento</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadReportes()">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <span>Reportes</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="loadAuditorias()">
+                        <i class="nav-icon fas fa-shield-alt"></i>
+                        <span>Auditorías</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" style="display: none; background: none; border: none; font-size: 20px; color: var(--gray-600); cursor: pointer; padding: 8px;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                        <div class="breadcrumb" id="breadcrumb">Panel principal / Resumen</div>
+                    </div>
+                </div>
+                
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Buscar productos, usuarios, bodegas...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    
+                    <button class="notification-btn" onclick="toggleNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationCount">5</span>
+                    </button>
+                    
+                    <div class="user-menu" onclick="toggleUserMenu()">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userName">Usuario</div>
+                            <div class="user-role" id="userRole">Administrador</div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Salir
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content">
+                <div id="mainContent">
+                    <!-- Dashboard content will be loaded here -->
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Cargando dashboard...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" style="position: fixed; top: 80px; right: 32px; width: 380px; background: var(--white); border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); z-index: 1001; display: none; max-height: 500px; overflow-y: auto;">
+        <div style="padding: 24px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); border-radius: 16px 16px 0 0;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Notificaciones</h3>
+                <button onclick="toggleNotifications()" style="background: none; border: none; cursor: pointer; color: var(--gray-400);">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div style="padding: 16px;">
+            <div style="padding: 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='transparent'">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <div style="width: 32px; height: 32px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">Stock crítico detectado</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">5 productos requieren reposición urgente</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='transparent'">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <div style="width: 32px; height: 32px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">Transferencia completada</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">150 unidades movidas entre bodegas</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; border-radius: 8px; margin-bottom: 8px;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='transparent'">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <div style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-plus" style="color: var(--primary);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">Nuevo usuario registrado</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">Ana García se unió como operadora</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        const appState = {
+            currentUser: null,
+            dashboardData: {},
+            notifications: []
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            const token = localStorage.getItem('token');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+            
+            if (userInfo) {
+                appState.currentUser = JSON.parse(userInfo);
+                updateUserDisplay();
+            }
+            
+            loadDashboard();
+            setInterval(refreshNotifications, 30000);
+        }
+
+        function updateUserDisplay() {
+            const user = appState.currentUser;
+            if (user) {
+                document.getElementById('userName').textContent = user.username || user.nombre || 'Usuario';
+                document.getElementById('userRole').textContent = user.rol || 'Usuario';
+                document.getElementById('userAvatar').textContent = (user.username || user.nombre || 'U').charAt(0).toUpperCase();
+            }
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        function setActiveNavItem(element) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        function updatePageTitle(title, breadcrumb) {
+            document.getElementById('pageTitle').textContent = title;
+            document.getElementById('breadcrumb').textContent = breadcrumb;
+        }
+
+        function showLoading(message = 'Cargando...') {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Error:</strong> ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userInfo');
+            window.location.href = '/';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleUserMenu() {
+            // Placeholder for user menu
+        }
+
+        function refreshNotifications() {
+            // Placeholder for notification refresh
+        }
+
+        // Dashboard functions
+        async function loadDashboard() {
+            const navLink = document.querySelector('.nav-link[onclick="loadDashboard()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Dashboard', 'Panel principal / Resumen');
+            
+            showLoading('Cargando métricas del sistema...');
+            
+            try {
+                const [reportesRes, bodegasRes, productosRes, usuariosRes, movimientosRes] = await Promise.all([
+                    fetch('/reportes/resumen', { headers: getAuthHeaders() }),
+                    fetch('/bodegas', { headers: getAuthHeaders() }),
+                    fetch('/productos', { headers: getAuthHeaders() }),
+                    fetch('/usuarios', { headers: getAuthHeaders() }),
+                    fetch('/movimientos', { headers: getAuthHeaders() })
+                ]);
+
+                if (reportesRes.status === 401) { 
+                    logout(); 
+                    return; 
+                }
+
+                const [reportes, bodegas, productos, usuarios, movimientos] = await Promise.all([
+                    reportesRes.json(),
+                    bodegasRes.json(),
+                    productosRes.json(),
+                    usuariosRes.json(),
+                    movimientosRes.json()
+                ]);
+
+                appState.dashboardData = {
+                    totalBodegas: Array.isArray(bodegas) ? bodegas.length : 0,
+                    totalProductos: Array.isArray(productos) ? productos.length : 0,
+                    totalMovimientos: Array.isArray(movimientos) ? movimientos.length : 0,
+                    totalUsuarios: Array.isArray(usuarios) ? usuarios.length : 0,
+                    stockBajo: Array.isArray(productos) ? productos.filter(p => p.stock < 10).length : 0,
+                    valorInventario: Array.isArray(productos) ? productos.reduce((sum, p) => sum + (p.precio * p.stock), 0) : 0,
+                    productos: productos || [],
+                    movimientos: movimientos || [],
+                    bodegas: bodegas || []
+                };
+
+                renderDashboard();
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError(`No se pudieron cargar las métricas del sistema: ${error.message}`);
+            }
+        }
+
+        function renderDashboard() {
+            const data = appState.dashboardData;
+            
+            const content = `
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Bodegas</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${data.totalBodegas}</div>
+                        <div class="stat-change neutral">
+                            <i class="fas fa-minus"></i>
+                            Sin cambios
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Productos</span>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, var(--secondary) 0%, #A855F7 100%);">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${data.totalProductos}</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +8.2% vs mes anterior
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Movimientos</span>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, var(--info) 0%, #0891B2 100%);">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${data.totalMovimientos}</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +12.5% vs semana anterior
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Usuarios</span>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${data.totalUsuarios}</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +2 nuevos esta semana
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Stock Bajo</span>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${data.stockBajo}</div>
+                        <div class="stat-change ${data.stockBajo > 0 ? 'negative' : 'positive'}">
+                            <i class="fas fa-${data.stockBajo > 0 ? 'exclamation-triangle' : 'check-circle'}"></i>
+                            ${data.stockBajo > 0 ? 'Requiere atención' : 'Todo en orden'}
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Valor Inventario</span>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">$${data.valorInventario.toLocaleString('es-CO')}</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +5.7% vs mes anterior
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                                Movimientos por Día
+                            </h3>
+                            <div class="chart-filters">
+                                <button class="filter-btn active" onclick="filterChart('7d')">7 días</button>
+                                <button class="filter-btn" onclick="filterChart('30d')">30 días</button>
+                                <button class="filter-btn" onclick="filterChart('90d')">90 días</button>
+                            </div>
+                        </div>
+                        <canvas id="movimientosChart" width="400" height="300"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-chart-pie" style="color: var(--secondary);"></i>
+                                Distribución de Stock
+                            </h3>
+                        </div>
+                        <canvas id="stockChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-clock" style="color: var(--info);"></i>
+                            Actividad Reciente
+                        </h3>
+                        <div class="table-actions">
+                            <div class="table-search">
+                                <input type="text" placeholder="Buscar actividad..." id="activitySearch">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-download"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Usuario</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentActivityBody">
+                            ${generateRecentActivityRows()}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+            
+            // Initialize charts
+            setTimeout(() => {
+                initializeCharts();
+            }, 100);
+        }
+
+        function generateRecentActivityRows() {
+            const movements = appState.dashboardData.movimientos.slice(-10).reverse();
+            
+            if (!movements.length) {
+                return `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+                            No hay actividad reciente
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            return movements.map(mov => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">${formatDate(mov.fecha)}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${formatTime(mov.fecha)}</div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${getMovementTypeClass(mov.tipoMovimiento)}">
+                            ${mov.tipoMovimiento}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-weight: 500;">${mov.producto?.nombre || 'N/A'}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${mov.producto?.categoria || ''}</div>
+                    </td>
+                    <td style="font-weight: 600;">${mov.cantidad}</td>
+                    <td>${mov.usuario?.username || mov.usuario?.nombre || 'Sistema'}</td>
+                    <td>
+                        <span class="status-badge status-success">
+                            <i class="fas fa-check"></i>
+                            Completado
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getMovementTypeClass(type) {
+            switch(type) {
+                case 'ENTRADA': return 'status-success';
+                case 'SALIDA': return 'status-danger';
+                case 'TRANSFERENCIA': return 'status-info';
+                default: return 'status-info';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-CO', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('es-CO', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function initializeCharts() {
+            initMovimientosChart();
+            initStockChart();
+        }
+
+        function initMovimientosChart() {
+            const ctx = document.getElementById('movimientosChart')?.getContext('2d');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Movimientos',
+                        data: [12, 19, 8, 15, 22, 8, 14],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: 'rgb(255, 255, 255)',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                color: '#6B7280'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6B7280'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initStockChart() {
+            const ctx = document.getElementById('stockChart')?.getContext('2d');
+            if (!ctx) return;
+
+            const bodegas = appState.dashboardData.bodegas;
+            const labels = bodegas.map(b => b.nombre).slice(0, 5);
+            const data = labels.map(() => Math.floor(Math.random() * 500) + 100);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderWidth: 0,
+                        hoverBorderWidth: 2,
+                        hoverBorderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                color: '#6B7280'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function filterChart(period) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Reinitialize chart with new data
+            initMovimientosChart();
+        }
+
+        // Placeholder functions for other sections
+        function loadUsuarios() {
+            const navLink = document.querySelector('.nav-link[onclick="loadUsuarios()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Usuarios', 'Gestión de usuarios / Lista');
+            showLoading('Cargando usuarios...');
+        }
+
+        function loadBodegas() {
+            const navLink = document.querySelector('.nav-link[onclick="loadBodegas()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Bodegas', 'Gestión de bodegas / Lista');
+            showLoading('Cargando bodegas...');
+        }
+
+        function loadProductos() {
+            const navLink = document.querySelector('.nav-link[onclick="loadProductos()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Productos', 'Inventario / Productos');
+            showLoading('Cargando productos...');
+        }
+
+        function loadMovimientos() {
+            const navLink = document.querySelector('.nav-link[onclick="loadMovimientos()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Movimientos', 'Inventario / Movimientos');
+            showLoading('Cargando movimientos...');
+        }
+
+        function showCreateMovimiento() {
+            const navLink = document.querySelector('.nav-link[onclick="showCreateMovimiento()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Nuevo Movimiento', 'Inventario / Crear movimiento');
+            showLoading('Cargando formulario...');
+        }
+
+        function loadReportes() {
+            const navLink = document.querySelector('.nav-link[onclick="loadReportes()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Reportes', 'Análisis / Reportes');
+            showLoading('Generando reportes...');
+        }
+
+        function loadAuditorias() {
+            const navLink = document.querySelector('.nav-link[onclick="loadAuditorias()"]');
+            setActiveNavItem(navLink);
+            updatePageTitle('Auditorías', 'Sistema / Auditorías');
+            showLoading('Cargando auditorías...');
+        }
+
+        // Responsive design
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 1024) {
+                document.querySelector('.sidebar-toggle').style.display = 'block';
+            } else {
+                document.querySelector('.sidebar-toggle').style.display = 'none';
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
