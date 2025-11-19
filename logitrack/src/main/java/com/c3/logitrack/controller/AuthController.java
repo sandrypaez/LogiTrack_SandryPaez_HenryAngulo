@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.c3.logitrack.entities.Usuario;
 import com.c3.logitrack.entities.enums.RolUsuario;
+import com.c3.logitrack.model.LoginRequest;
 import com.c3.logitrack.security.JwtTokenProvider;
 import com.c3.logitrack.service.AuthService;
 
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -59,9 +61,9 @@ public class AuthController {
                                     "}")))
     })
     public ResponseEntity<?> login(
-            @RequestBody @Parameter(description = "Credenciales del usuario") Map<String, String> loginRequest) {
-        String username = loginRequest.get("username");
-        String password = loginRequest.get("password");
+            @Valid @RequestBody @Parameter(description = "Credenciales del usuario") LoginRequest loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
         if (username == null || password == null) {
             Map<String, Object> error = new HashMap<>();

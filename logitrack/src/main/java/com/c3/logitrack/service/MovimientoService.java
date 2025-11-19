@@ -1,19 +1,25 @@
 package com.c3.logitrack.service;
 
-import com.c3.logitrack.entities.*;
-import com.c3.logitrack.entities.enums.TipoMovimiento;
-import com.c3.logitrack.exception.BadRequestException;
-import com.c3.logitrack.exception.ResourceNotFoundException;
-import com.c3.logitrack.model.MovimientoRequest;
-import com.c3.logitrack.repository.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.c3.logitrack.entities.Bodega;
+import com.c3.logitrack.entities.Movimiento;
+import com.c3.logitrack.entities.Producto;
+import com.c3.logitrack.entities.enums.TipoMovimiento;
+import com.c3.logitrack.exception.BadRequestException;
+import com.c3.logitrack.exception.ResourceNotFoundException;
+import com.c3.logitrack.model.MovimientoRequest;
+import com.c3.logitrack.repository.BodegaRepository;
+import com.c3.logitrack.repository.MovimientoRepository;
+import com.c3.logitrack.repository.ProductoRepository;
+import com.c3.logitrack.repository.UsuarioRepository;
 
 @Service
 public class MovimientoService {
@@ -96,8 +102,8 @@ public class MovimientoService {
         movimiento.setCantidad(request.getCantidad());
         movimiento.setBodegaOrigen(origen);
         movimiento.setBodegaDestino(destino);
-        movimiento.setFecha(request.getFecha() != null
-                ? request.getFecha().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
+        movimiento.setFecha(request.getFecha() != null 
+                ? request.getFecha() 
                 : LocalDateTime.now());
 
         // Usuario autenticado
