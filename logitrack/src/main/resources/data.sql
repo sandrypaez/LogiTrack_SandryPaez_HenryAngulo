@@ -55,7 +55,6 @@ INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, usuario_responsable
 VALUES
     ('2025-11-04 13:00:00', 'ENTRADA', 18, 18, NULL, 3, 3, 75),
     ('2025-11-05 14:00:00', 'SALIDA', 19, 19, 2, NULL, 2, 30),
-    ('2025-11-06 15:00:00', 'TRANSFERENCIA', 20, 20, 3, 1, 4, 25),
     ('2025-11-07 16:00:00', 'ENTRADA', 21, 21, NULL, 4, 5, 90),
     ('2025-11-08 17:00:00', 'SALIDA', 22, 22, 4, NULL, 3, 40),
     ('2025-11-09 18:00:00', 'TRANSFERENCIA', 23, 23, 1, 5, 6, 35),

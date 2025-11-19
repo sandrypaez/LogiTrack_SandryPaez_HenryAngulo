@@ -39,15 +39,13 @@ public class AuthService {
 
     // ===== Login =====
     public Usuario authenticateUser(String username, String password) {
-        // Aceptar cualquier usuario y contraseña sin validar contra la BD
-        // Si el usuario existe, devolverlo; si no, crear uno temporal
-        return usuarioRepository.findByUsername(username).orElseGet(() -> {
-            Usuario temporal = new Usuario();
-            temporal.setUsername(username);
-            temporal.setEmail(username != null ? username + "@example.com" : "");
-            temporal.setPassword(password != null ? passwordEncoder.encode(password) : passwordEncoder.encode(""));
-            temporal.setRol(RolUsuario.EMPLEADO);
-            return temporal;
-        });
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new BadRequestException("Usuario o contraseña incorrectos"));
+        
+        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+            throw new BadRequestException("Usuario o contraseña incorrectos");
+        }
+        
+        return usuario;
     }
 }
