@@ -50,20 +50,19 @@ VALUES
     ('empleado9', 'ghij', 'empleado9@logitrack.com', 'EMPLEADO'),
     ('admin5', '7890', 'admin5@logitrack.com', 'ADMIN'),
     ('empleado10', 'klmn', 'empleado10@logitrack.com', 'EMPLEADO');
-
-INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, usuario_responsable_id, bodega_origen_id, bodega_destino_id, producto_id, cantidad)
+INSERT INTO movimientos (fecha, tipo_movimiento, usuario_id, bodega_origen_id, bodega_destino_id, producto_id, cantidad)
 VALUES
-    ('2025-11-04 13:00:00', 'ENTRADA', 18, 18, NULL, 3, 3, 75),
-    ('2025-11-05 14:00:00', 'SALIDA', 19, 19, 2, NULL, 2, 30),
-    ('2025-11-07 16:00:00', 'ENTRADA', 21, 21, NULL, 4, 5, 90),
-    ('2025-11-08 17:00:00', 'SALIDA', 22, 22, 4, NULL, 3, 40),
-    ('2025-11-09 18:00:00', 'TRANSFERENCIA', 23, 23, 1, 5, 6, 35),
-    ('2025-11-10 19:00:00', 'ENTRADA', 24, 24, NULL, 2, 7, 110),
-    ('2025-11-11 20:00:00', 'SALIDA', 25, 25, 5, NULL, 4, 55),
-    ('2025-11-12 21:00:00', 'TRANSFERENCIA', 26, 26, 2, 3, 8, 45),
-    ('2025-11-13 22:00:00', 'ENTRADA', 27, 27, NULL, 1, 9, 80),
-    ('2025-11-14 23:00:00', 'SALIDA', 28, 28, 3, NULL, 5, 60),
-    ('2025-11-15 00:00:00', 'TRANSFERENCIA', 29, 29, 4, 2, 10, 50);
+    ('2025-11-04 13:00:00', 'ENTRADA', 1, NULL, 3, 3, 75),
+    ('2025-11-05 14:00:00', 'SALIDA', 2, 2, NULL, 2, 30),
+    ('2025-11-07 16:00:00', 'ENTRADA', 3, NULL, 4, 5, 90),
+    ('2025-11-08 17:00:00', 'SALIDA', 4, 4, NULL, 3, 40),
+    ('2025-11-09 18:00:00', 'TRANSFERENCIA', 5, 1, 5, 6, 35),
+    ('2025-11-10 19:00:00', 'ENTRADA', 6, NULL, 2, 7, 110),
+    ('2025-11-11 20:00:00', 'SALIDA', 7, 5, NULL, 4, 55),
+    ('2025-11-12 21:00:00', 'TRANSFERENCIA', 8, 2, 3, 8, 45),
+    ('2025-11-13 22:00:00', 'ENTRADA', 9, NULL, 1, 9, 80),
+    ('2025-11-14 23:00:00', 'SALIDA', 10, 3, NULL, 5, 60),
+    ('2025-11-15 00:00:00', 'TRANSFERENCIA', 11, 4, 2, 10, 50);
 
 
 INSERT INTO auditorias (tipo_operacion, fecha_hora, usuario, entidad_afectada, entidad_id, valores_anteriores, valores_nuevos)

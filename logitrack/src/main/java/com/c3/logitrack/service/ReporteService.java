@@ -69,6 +69,7 @@ public class ReporteService {
         return resultado;
     }
 
+    @SuppressWarnings("null")
     private List<Map<String, Object>> calcularProductosMasMovidos() {
         List<Map<String, Object>> resultado = new ArrayList<>();
         Map<Long, Long> movimientosPorProducto = new HashMap<>();

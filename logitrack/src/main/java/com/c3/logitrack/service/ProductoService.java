@@ -48,6 +48,7 @@ public class ProductoService {
         return productoRepository.save(producto);
     }
 
+    @SuppressWarnings("null")
     public void eliminarProducto(Long id) {
         if (id == null) {
             throw new BadRequestException("El id del producto es obligatorio");
